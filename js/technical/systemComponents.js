@@ -63,7 +63,7 @@ var systemComponents = {
 		`
 	},
 
-	
+
 	'layer-tab': {
 		props: ['layer', 'back', 'spacing', 'embedded'],
 		template: `<div v-bind:style="[tmp[layer].style ? tmp[layer].style : {}, (tmp[layer].tabFormat && !Array.isArray(tmp[layer].tabFormat)) ? tmp[layer].tabFormat[player.subtabs[layer].mainTabs].style : {}]" class="noBackground">
@@ -106,24 +106,37 @@ var systemComponents = {
 		template: `
 		<div class="overlayThing" style="padding-bottom:7px; width: 90%; z-index: 1000; position: relative">
 			<div v-for="thing in tmp.displayNews" class="overlayThing"><span v-if="thing" v-html="thing"></span></div>
-			<span v-if="player.devSpeed && player.devSpeed != 1" class="overlayThing">
-			<br>速度: {{format(player.devSpeed)}}x<br>
-			</span>
-			<span v-if="player.offTime !== undefined"  class="overlayThing">
-			<br>离线时间: {{formatTime(player.offTime.remain)}}<br>
-			</span>
 			<span class="overlayThing">你有 </span>
-			<h2  class="overlayThing" id="points">{{format(player.points)}}</h2>
-			<span class="overlayThing"> {{modInfo.pointsName}}</span>
+				<h2 class="overlayThing" id="points">{{format(player.points)}}</h2>
+				<span class="overlayThing"> {{modInfo.pointsName}}</span>
 			<br>
-			<span v-if="canGenPoints()"  class="overlayThing">({{tmp.other.oompsMag != 0 ? format(tmp.other.oomps) + " OOM" + (tmp.other.oompsMag < 0 ? "^OOM" : tmp.other.oompsMag > 1 ? "^" + tmp.other.oompsMag : "") + "s" : formatSmall(getPointGen())}}/秒)</span>
-			<div v-for="thing in tmp.displayThings" class="overlayThing"><span v-if="thing" v-html="thing"></span></div>
+			<span class="overlayThing">({{tmp.other.oompsMag != 0 ? format(tmp.other.oomps) + " OOM" + (tmp.other.oompsMag < 0 ? "^OOM" : tmp.other.oompsMag > 1 ? "^" + tmp.other.oompsMag : "") + "s" : formatSmall(getPointGen())}}/秒)
+			</span>
+			<span v-if="!canGenPoints()"  class="overlayThing" style>
+			<h3 class="overlayThing" id="points">[你现在是醒的]</h3>
+			</span>
+			<br>
+			<span>
+			现实时间: <h3 class="overlayThing" id="points">{{new Date().toLocaleString('zh', { timeZone: 'Asia/Shanghai' })}}</h3>
+			</span>
+			<br>
+			<span>
+			游戏时间: <h3 class="overlayThing" id="points">{{showTime(player.gameTime)}}</h3>
+			</span>
+			<span>
+			<br>
+			时间流速: <h3 class="overlayThing" id="points">{{format(timeSpeed())}}x</h3>
+			</span>
+			<br>
+			<span v-if="player.offTime !== undefined" class="overlayThing">
+			离线时间: {{formatTime(player.offTime.remain)}}<br>
+			</span>
 		</div>
 	`
-    },
+	},
 
-    'info-tab': {
-        template: `
+	'info-tab': {
+		template: `
         <div>
         <h2>{{modInfo.name}}</h2>
         <br>
@@ -147,10 +160,10 @@ var systemComponents = {
         <h3>热键</h3><br>
         <span v-for="key in hotkeys" v-if="player[key.layer].unlocked && tmp[key.layer].hotkeys[key.id].unlocked"><br>{{key.description}}</span></div>
     `
-    },
+	},
 
-    'options-tab': {
-        template: `
+	'options-tab': {
+		template: `
         <table>
             <tr>
                 <td><button class="opt" onclick="save()">保存</button></td>
@@ -165,28 +178,32 @@ var systemComponents = {
                 <td><button class="opt" onclick="toggleOpt('forceOneTab'); needsCanvasUpdate = true">页面布局:<br>{{ options.forceOneTab?"单页面":"双页面" }}</button></td>
             </tr>
             <tr>
-				<td></td>
+                <td><button class="opt" onclick="toggleOpt('offlineProd');">离线进度: {{ options.offlineProd?"开":"关" }}</button></td>
                 <td><button class="opt" onclick="exportSave()">导出存档<br/>到剪贴板</button></td>
                 <td><button class="opt" onclick="importSave()">导入存档</button></td>
             </tr>
+            <div style="height: 1000px;"></div>
+            <tr>
+                <td><button class="opt" onclick="toggleOpt('badWeb');">联网获取新闻: {{ options.badWeb?"开":"关" }}</button></td>
+            </tr>
         </table>`
-    },
+	},
 
-    'back-button': {
-        template: `
+	'back-button': {
+		template: `
         <button v-bind:class="back" onclick="goBack()">←</button>
         `
-    },
+	},
 
 
-	'tooltip' : {
+	'tooltip': {
 		props: ['text'],
 		template: `<div class="tooltip" v-html="text"></div>
 		`
 	},
 
 	'node-mark': {
-		props: {'layer': {}, data: {}, offset: {default: 0}, scale: {default: 1}},
+		props: { 'layer': {}, data: {}, offset: { default: 0 }, scale: { default: 1 } },
 		template: `<div v-if='data'>
 			<div v-if='data === true' class='star' v-bind:style='{position: "absolute", left: (offset-10) + "px", top: (offset-10) + "px", transform: "scale( " + scale||1 + ", " + scale||1 + ")"}'></div>
 			<img v-else class='mark' v-bind:style='{position: "absolute", left: (offset-22) + "px", top: (offset-15) + "px", transform: "scale( " + scale||1 + ", " + scale||1 + ")"}' v-bind:src="data"></div>

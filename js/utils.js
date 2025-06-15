@@ -11,10 +11,10 @@ function respecBuyables(layer) {
 
 function canAffordUpgrade(layer, id) {
 	let upg = tmp[layer].upgrades[id]
-	if(tmp[layer].deactivated) return false
+	if (tmp[layer].deactivated) return false
 	if (tmp[layer].upgrades[id].canAfford === false) return false
 	let cost = tmp[layer].upgrades[id].cost
-	if (cost !== undefined) 
+	if (cost !== undefined)
 		return canAffordPurchase(layer, upg, cost)
 
 	return true
@@ -119,7 +119,7 @@ function clickClickable(layer, id) {
 }
 
 function clickGrid(layer, id) {
-	if (!player[layer].unlocked  || tmp[layer].deactivated) return
+	if (!player[layer].unlocked || tmp[layer].deactivated) return
 	if (!run(layers[layer].grid.getUnlocked, layers[layer].grid, id)) return
 	if (!gridRun(layer, 'getCanClick', player[layer].grid[id], id)) return
 
@@ -144,7 +144,7 @@ var onTreeTab = true
 
 function showTab(name, prev) {
 	if (LAYERS.includes(name) && !layerunlocked(name)) return
-	if (player.tab !== name) clearParticles(function(p) {return p.layer === player.tab})
+	if (player.tab !== name) clearParticles(function (p) { return p.layer === player.tab })
 	if (tmp[name] && player.tab === name && isPlainObject(tmp[name].tabFormat)) {
 		player.subtabs[name].mainTabs = Object.keys(layers[name].tabFormat)[0]
 	}
@@ -160,11 +160,11 @@ function showTab(name, prev) {
 function showNavTab(name, prev) {
 	console.log(prev)
 	if (LAYERS.includes(name) && !layerunlocked(name)) return
-	if (player.navTab !== name) clearParticles(function(p) {return p.layer === player.navTab})
+	if (player.navTab !== name) clearParticles(function (p) { return p.layer === player.navTab })
 	if (tmp[name] && tmp[name].previousTab !== undefined) prev = tmp[name].previousTab
 	var toTreeTab = name == "tree-tab"
 	console.log(name + prev)
-	if (name!== "none" && prev && !tmp[prev]?.leftTab == !tmp[name]?.leftTab) player[name].prevTab = prev
+	if (name !== "none" && prev && !tmp[prev]?.leftTab == !tmp[name]?.leftTab) player[name].prevTab = prev
 	else if (player[name])
 		player[name].prevTab = ""
 	player.navTab = name
@@ -194,15 +194,15 @@ function layOver(obj1, obj2) {
 
 function prestigeNotify(layer) {
 	if (layers[layer].prestigeNotify) return layers[layer].prestigeNotify()
-	
+
 	if (isPlainObject(tmp[layer].tabFormat)) {
-		for (subtab in tmp[layer].tabFormat){
+		for (subtab in tmp[layer].tabFormat) {
 			if (subtabResetNotify(layer, 'mainTabs', subtab))
 				return true
 		}
 	}
 	for (family in tmp[layer].microtabs) {
-		for (subtab in tmp[layer].microtabs[family]){
+		for (subtab in tmp[layer].microtabs[family]) {
 			if (subtabResetNotify(layer, family, subtab))
 				return true
 		}
@@ -219,12 +219,12 @@ function notifyLayer(name) {
 }
 
 function subtabShouldNotify(layer, family, id) {
-    let subtab = {}
-    if (family == "mainTabs") subtab = tmp[layer].tabFormat[id]
-    else subtab = tmp[layer].microtabs[family][id]
+	let subtab = {}
+	if (family == "mainTabs") subtab = tmp[layer].tabFormat[id]
+	else subtab = tmp[layer].microtabs[family][id]
 	if (!subtab.unlocked) return false
-    if (subtab.embedLayer) return tmp[subtab.embedLayer].notify
-    else return subtab.shouldNotify
+	if (subtab.embedLayer) return tmp[subtab.embedLayer].notify
+	else return subtab.shouldNotify
 }
 
 function subtabResetNotify(layer, family, id) {
@@ -345,11 +345,11 @@ document.title = modInfo.name
 // Converts a string value to whatever it's supposed to be
 function toValue(value, oldValue) {
 	if (oldValue instanceof Decimal) {
-		value = new Decimal (value)
+		value = new Decimal(value)
 		if (checkDecimalNaN(value)) return decimalZero
 		return value
 	}
-	if (!isNaN(oldValue)) 
+	if (!isNaN(oldValue))
 		return parseFloat(value) || 0
 	return value
 }
@@ -410,3 +410,224 @@ function gridRun(layer, func, data, id) {
 	else
 		return layers[layer].grid[func];
 }
+
+// # 自定义
+// 特殊数字简写
+let _86400 = new Decimal(86400);
+let _3600 = new Decimal(3600);
+let _100 = new Decimal(100);
+let _60 = new Decimal(60);
+let _50 = new Decimal(50);
+let _32 = new Decimal(32);
+let _30 = new Decimal(30);
+let _20 = new Decimal(20);
+let _16 = new Decimal(16);
+let _10 = new Decimal(10);
+let _9 = new Decimal(9);
+let _8 = new Decimal(8);
+let _7 = new Decimal(7);
+let _6 = new Decimal(6);
+let _5 = new Decimal(5);
+let _4 = new Decimal(4);
+let _3 = new Decimal(3);
+let _2 = new Decimal(2);
+let _1 = new Decimal(1);
+let _0 = new Decimal(0);
+let _h2 = divNum(_2);
+
+// 工具函数
+
+/**
+ * 请用于以1为倒数的数的简便写法
+ * @param {Decimal} dividend - 被除数
+ * @param {Decimal} [divisor = 1] - 除数 *不推荐使用该参数,乖乖用.div()
+ */
+function divNum(dividend, divisor = new Decimal(1)) {
+	return divisor.div(dividend);
+}
+// 2的幂次
+function pow2(pow) {
+	return _2.pow(new Decimal(pow))
+}
+
+// 核心函数 - 自定义事件驱动
+function myTicking(diff) {
+	player.gameTime = (player.gameTime.add(timeSpeed().mul(diff)));
+}
+
+// 核心函数 - 时间流速
+function timeSpeed() {
+	return _1
+		.mul(hasUpgrade("m", 11) ? upgradeEffect("1", 11) : _1)
+}
+
+// 核心函数 - 睡眠判定
+function isSleep() {
+	return hasMilestone("m", 0) ? true :
+		player.gameTime.gte(player.sleepTime)
+}
+
+// 你知道的太多了
+// 避免重复定义开销
+const randomString_chars = `ABCDEFGHJKLMNOPQRSTUWXYZabcdefghijklmnopqrstuwxyz1234567890?!;=+-/@#$%^&*~|\`"'\\()[]{},.乾狐离光          `;
+function randomString(length) {
+	let result = '';
+	
+	for (let i = 0; i < length; i++) {
+	  result += randomString_chars[Math.floor(Math.random() * randomString_chars.length)];
+	}
+	
+	return result;
+}
+
+/**
+ * 带变量的if else语句表达式简写版本,例如 a ? "abc".length : "abc" 可表达为 ifElseViarable("a", "v.length", "v", "abc")
+ * @param {boolean} exp - 用于判断的表达式,可以是文本
+ * @param {text} a - 真分支表达式
+ * @param {text} b - 假分支表达式
+ * @param {text} vir - 变量值
+ * @param {text} [virName="v"] - 变量名
+ */
+function ifElseVirable(exp, a, b, vir, virName = "v") {
+	return eval(`((${virName}) => ${exp} ? ${a} : ${b} )(${vir})`);
+}
+
+// 新闻
+function getNewsList() {
+	return [
+		"欢迎来到睡觉树 Made by QHLG",
+		"我们听说这里有一个新闻,但突然发现有新闻这件事就是新闻",
+		`乾狐离光的网站地址在<a href="https://qhlg.flime.top">https://qhlg.flime.top</a>`,
+		"乾狐离光不是💰️🦊🍐🌟也不是雀魂老狗更不是清华理工",
+		"你在挂机的时候也在看我吗?",
+		"开发者模式已启动,您的游戏速度已提升1e1e4514倍!",
+		"为什么要写新闻条来掩饰自己没什么内容(恼)",
+		"我们有一点狐币,狐币可以压成石头,石头里有一只狐狸",
+		'let jrrp = 101; let jrrptext = "你的运气爆表了!";',
+		"There is nobody called Fox. Go to the other side.",
+		"如果你付出了你应该付出的,你就会获得你需要的",
+		"Only Fox Can Do!!!",
+		`点<input type="button" value="我" onclick="alert('你被骗了!');player.nevergonnagiveyouup=true"/>获得10000000000000000000000000000灵感`,
+		"其实疯狂点击新闻栏可以为你提供一个速度加成",
+		"使用狐狸主题,使用狐狸主题谢谢喵!",
+		"我不想让你关闭新闻栏,所以没做这个按钮,绝对不是懒得做",
+		"把我加回来是 因为我是树洞? 要继续对我发泄?",
+		"Are You Lost?",
+		"喵~喵~咕噜咕噜~",
+		`This is a <span style="color: hsl(0, 100%, 50%)">R</span><span style="color: hsl(30, 100%, 50%)">A</span><span style="color: hsl(60, 100%, 50%)">I</span><span style="color: hsl(120, 100%, 50%)">N</span><span style="color: hsl(180, 100%, 50%)">B</span><span style="color: hsl(240, 100%, 50%)">O</span><span style="color: hsl(300, 100%, 50%)">W</span>`,
+		randomString(20),
+		...(hasMilestone("m", 1) ?
+			[
+				"＜spin＞哈里路大旋风!＜/spin＞",
+				"这就叫实力,这就叫背景,这就叫狐狸,狐狸怎么叫?",
+				"Ciallo～(∠・ω<)⌒☆",
+				"I just wanna JUMP~ JUMP~ JUMP~ JUMP~ JUMP~ JUMP~ JUMP~ JUMP~",
+				"为什么gta6还没做出来,因为现在正在美国加州等地进行线下公测()",
+				"生成生成生成器的生成器的生成器生成生成生成器的生成器",
+				"本游戏禁止将滚木以及同音或近音词当做空白字符看待,否则禁言滚木小时,持续滚木天",
+				"我可以用新闻栏播彩六,对吧!",
+			]
+			: ["解锁思维层第二里程碑以解锁一系列新的新闻"]
+		),
+		...(options.badWeb ?
+			[
+				"400 Bad Request",
+				"401 Unauthorized",
+				"403 Forbidden",
+				"404 Not Found",
+				"405 Method Not Allowed",
+				"406 Not Acceptable",
+				"407 Proxy Authentication Required",
+				"408 Request Timeout",
+				"409 Conflict",
+				"410 Gone",
+				"411 Length Required",
+				"412 Precondition Failed",
+				"413 Payload Too Large",
+				"414 URI Too Long",
+				"415 Unsupported Media Type",
+				"416 Range Not Satisfiable",
+				"417 Expectation Failed",
+				"418 I'm a teapot",
+				"421 Misdirected Request",
+				"426 Upgrade Required",
+				"428 Precondition Required",
+				"429 Too Many Requests",
+				"431 Request Header Fields Too Large",
+				"451 Unavailable For Legal Reasons",
+				"500 Internal Server Error",
+				"501 Not Implemented",
+				"502 Bad Gateway",
+				"503 Service Unavailable",
+				"504 Gateway Timeout",
+				"505 HTTP Version Not Supported",
+				"506 Variant Also Negotiates",
+				"510 Not Extended",
+				"511 Network Authentication Required",
+			]
+			: [`如果你在设置中打开了"从互联网获取新闻,你就能够获得一些新的新闻"`]
+		)
+	]
+}
+
+function updateNewsDisplay() {
+	if (!player.news) return;
+
+	const newsList = getNewsList();
+	const currentNews = newsList[player.news.index];
+
+	if (!player.news.isRotating) {
+		player.news.text = getNextCharacter(currentNews, 0);
+		player.news.charIndex = 1;
+		player.news.isRotating = true;
+		player.news.lastUpdate = Date.now();
+		player.news.completeTime = 0;
+		return;
+	}
+
+	const now = Date.now();
+	const timeDiff = now - player.news.lastUpdate;
+
+	if (timeDiff >= 125) {
+		const charsToAdd = Math.floor(timeDiff / 125);
+		let newCharIndex = player.news.charIndex;
+
+		for (let i = 0; i < charsToAdd && newCharIndex < currentNews.length; i++) {
+			newCharIndex = getNextCharIndex(currentNews, newCharIndex);
+		}
+
+		player.news.charIndex = Math.min(newCharIndex, currentNews.length);
+		player.news.text = currentNews.substring(0, player.news.charIndex);
+		player.news.lastUpdate = now;
+
+		if (player.news.charIndex >= currentNews.length && player.news.completeTime === 0) {
+			player.news.completeTime = now;
+		}
+
+		if (player.news.completeTime > 0 && now - player.news.completeTime >= 5000) {
+			const oldIndex = player.news.index;
+			do {
+				player.news.index = Math.floor(Math.random() * newsList.length);
+			} while (oldIndex == player.news.index);
+			player.news.isRotating = false;
+			player.news.completeTime = 0;
+		}
+	}
+
+	function getNextCharIndex(text, currentIndex) {
+		if (currentIndex >= text.length) return currentIndex;
+
+		if (text[currentIndex] === '<') {
+			const endIndex = text.indexOf('>', currentIndex);
+			return endIndex === -1 ? text.length : endIndex + 1;
+		}
+
+		return currentIndex + 1;
+	}
+
+	function getNextCharacter(text, startIndex) {
+		const endIndex = getNextCharIndex(text, startIndex);
+		return text.substring(startIndex, endIndex);
+	}
+}
+

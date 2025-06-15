@@ -1,24 +1,24 @@
 let modInfo = {
-	name: "狐狸树",
-	id: "the-fox-tree",
+	name: "睡觉树",
+	id: "the-sleep-tree",
 	author: "乾狐离光",
-	pointsName: "能量",
+	pointsName: "梦境",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "乾狐离光的官网",
 	discordLink: "https://qhlg.flime.top/",
-	initialStartPoints: new Decimal(1), // 用于硬重置和新玩家
-	offlineLimit: 0,  // 离线时间限制（小时）
+	initialStartPoints: new Decimal(0), // 用于硬重置和新玩家
+	offlineLimit: 24,  // 离线时间限制（小时）
 }
 
 // 在num和name中设置版本号
 let VERSION = {
 	num: "0.0",
-	name: "只是细胞"
+	name: ""
 }
 
 let changelog = `<h1>更新日志:</h1><br>
-	<h3>v0.0 | 2025/6/14</h3><br>
+	<h3>v0.0 | 2025/6/16</h3><br>
 	更新了基础游戏内容`
 
 let winText = `恭喜!你已经击败了这个游戏,但是你可以继续游玩它`
@@ -32,7 +32,7 @@ function getStartPoints() {
 
 // 决定是否显示点数/秒
 function canGenPoints() {
-	return true
+	return isSleep()
 }
 
 // 计算点数/秒！
@@ -40,17 +40,17 @@ function getPointGen() {
 	if (!canGenPoints())
 		return new Decimal(0)
 
-	let gain = hasUpgrade(0, 11) ?
-		upgradeEffect(0, 11)
-		.add(hasUpgrade("0", 22) ? upgradeEffect("0", 22) : _0)
-		: new Decimal(0)
+	let gain = new Decimal(1).div(new Decimal(600)).mul(timeSpeed())
 	return gain
 }
 
 // 你可以在此添加应该存入"player"并保存的非图层相关变量，以及默认值
 function addedPlayerData() {
 	return {
-		//新闻
+		// 时间
+		gameTime: new Decimal(0),
+		sleeptime: new Decimal(21600),
+		// 新闻
 		news: {
 			index: 0,
 			text: "",
@@ -58,7 +58,7 @@ function addedPlayerData() {
 			lastUpdate: 0,
 			isRotating: false
 		},
-		//隐藏成就
+		// 隐藏成就
 		nevergonnagiveyouup: false
 	}
 }

@@ -46,16 +46,9 @@ addLayer("a", {
     achievementPopups: true,
     achievements: {
         11: {
-            name: "吸光吸热",
-            tooltip: "购买线粒体",
-            done() { return hasUpgrade("0", 11) },
-            unlocked() { return true },
-        },
-        12: {
-            name: "我要裂了",
-            tooltip: "购买中心体",
-            done() { return hasUpgrade("0", 14) },
-            unlocked() { return true },
+            name: "真实的梦境<br>虚假的我",
+            tooltip: "现在马上去睡觉<br>还来得及",
+            done() { return options.theme == "fox" }
         },
         13: {
             name: "我裂开了",
@@ -116,18 +109,18 @@ addLayer("a", {
     ],
 })
 
-addLayer("0", {
-    name: "能量",
-    symbol: "🔥",
-    resource: "能量",
+// Mind
+addLayer("m", {
+    name: "思维",
+    symbol: "🧠",
+    resource: "思维",
     row: 0,
     position: 0,
     color: "#D89536",
     startData() {
         return {
             unlocked: true,
-            points: _1,
-            resetTime: 0
+            points: _0
         }
     },
     update() {
@@ -373,14 +366,18 @@ addLayer("1", {
             _16.div(hasMilestone("1", 1) ? _6 : _1)
         )
     },
+    base: function () {
+        return _2
+    },
+    roundUpCost: false,
     canBuyMax() {
         return hasMilestone("1", 1)
     },
     milestones: {
         0: {
-            requirementDescription: "2 细胞 | 第一次进化",
-            effectDescription: "你现在不再是孤身一胞了!虽然现在这还没造成什么大影响...<br>但你分裂的花销减少了一半",
-            done() { return player[this.layer].points.gte(2) }
+            requirementDescription: "1灵感 | 一觉醒来我一觉醒来,而我不变 [永不重置]",
+            effectDescription: '回家吧,孩子,回家吧,躺在床上做一个春秋大梦,猪怎么过你就怎么过<br>你每日的睡眠时间限制为6小时,也就是每天的0:00~6:00<br>非睡眠时间你是不会做梦的,你没看错,这是一个减益里程碑',
+            done() { return player[this.layer].points.gte(1) }
         },
         1: {
             requirementDescription: "5 细胞 | 我的兄弟姐妹",
