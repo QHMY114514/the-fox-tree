@@ -115,9 +115,10 @@ function getNewsList() {
 		` <input type="button" value="点击我" onclick="alert('你被骗了!');player.nevergonnagiveyouup=true"/>点击这个按钮获得10000000000000000000000000000狐币`,
 		"其实疯狂点击新闻栏可以为你提供一个速度加成",
 		"Ciallo～(∠・ω<)⌒☆",
-		"I just wanna JUMP JUMP JUMP JUMP JUMP~",
+		"I just wanna JUMP~ JUMP~ JUMP~ JUMP~ JUMP~ JUMP~ JUMP~ JUMP~",
 		"使用狐狸主题,使用狐狸主题谢谢喵!",
-		"我不想让你关闭新闻栏,所以没做这个按钮,绝对不是懒得做"
+		"我不想让你关闭新闻栏,所以没做这个按钮,绝对不是懒得做",
+		"为什么gta6还没做出来,因为现在正在美国加州等地进行线下公测()"
 	]
 }
 
