@@ -428,6 +428,7 @@ var interval = setInterval(function() {
 	updateOomps(diff);
 	updateWidth()
 	updateTabFormats()
+	myTicking(diff)
 	gameLoop(diff)
 	fixNaNs()
 	adjustPopupTime(trueDiff)

@@ -109,3 +109,76 @@ function invertOOM(x){
 
     return x
 }
+
+function showTime(time) {
+    if (time.lte(new Decimal(86400))) {
+        const totalSeconds = time.toNumber();
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = Math.floor(totalSeconds % 60);
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    } else if (time.lt(new Decimal(31536000))) {
+        const totalSeconds = time.toNumber();
+        const days = Math.floor(totalSeconds / 86400);
+        const remainingSeconds = totalSeconds % 86400;
+        const hours = Math.floor(remainingSeconds / 3600);
+        const minutes = Math.floor((remainingSeconds % 3600) / 60);
+        const seconds = Math.floor(remainingSeconds % 60);
+        return `${days}天 ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    } else if (time.lt(new Decimal(315360000000))) {
+        const totalSeconds = time.toNumber();
+        const years = Math.floor(totalSeconds / 31536000);
+        const remainingSeconds = totalSeconds % 31536000;
+        const days = Math.floor(remainingSeconds / 86400);
+        return `${years}年 ${days}天`;
+    } else {
+        const years = time.div(31536000);
+        return `${ChineseCount(years)}年`;
+    }
+}
+
+
+function ChineseCount(num) {
+    const d = new Decimal(num);
+    
+    if (d.eq(0)) {
+        return "0";
+    }
+    
+    const basenum = [
+        { base: 0, code: "" },
+        { base: 4, code: "万" },
+        { base: 8, code: "亿" },
+        { base: 12, code: "兆" },
+        { base: 16, code: "京" },
+        { base: 20, code: "垓" },
+        { base: 24, code: "秭" },
+        { base: 28, code: "穰" },
+        { base: 32, code: "沟" },
+        { base: 36, code: "涧" },
+        { base: 40, code: "正" },
+        { base: 44, code: "载" },
+        { base: 48, code: "极" },
+        { base: 52, code: "恒河沙" },
+        { base: 56, code: "阿僧祇" },
+        { base: 60, code: "那由他" },
+        { base: 64, code: "不可思议" },
+        { base: 68, code: "无量" },
+        { base: 72, code: "大数" },
+    ];
+    
+    const exponent = d.log10();
+    
+    if (exponent.gte(72)) {
+        return format(d);
+    }
+    
+    const baseIndex = Decimal.min(
+        exponent.div(4).floor(), 
+        new Decimal(basenum.length - 1)
+    ).toNumber();
+    
+    const selectedBase = basenum[baseIndex];
+    
+    return format(d.div(_10.pow(new Decimal(selectedBase.base)))) + selectedBase.code;
+}

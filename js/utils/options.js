@@ -8,13 +8,14 @@ function getStartOptions() {
 		msDisplay: "always",
 		theme: "fox",
 		hqTree: false,
-		offlineProd: false,
+		offlineProd: true,
 		hideChallenges: false,
 		showStory: true,
 		forceOneTab: false,
 		oldStyle: false,
 		forceTooltips: true,
 		hideMilestonePopups: false,
+		badWeb: false,
 	}
 }
 
